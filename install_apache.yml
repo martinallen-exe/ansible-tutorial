@@ -21,3 +21,19 @@
       state: latest
     when: ansible_distribution == "Ubuntu"
 
+  - name: update repository index
+    dnf: 
+      update_cache: true
+    when: ansible_distribution == "AlmaLinux"
+
+  - name: install httpd
+    dnf:
+      name: httpd
+      state: latest
+    when: ansible_distribution == "AlmaLinux"
+
+  - name: add php
+    dnf:
+      name: php
+      state: latest
+    when: ansible_distribution == "AlmaLinux"
