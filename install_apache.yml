@@ -3,18 +3,21 @@
 - hosts: all
   become: true
   tasks: 
+
   - name: update repository index
-    dnf:
+    apt:
       update_cache: true
+    when: ansible_distribution == "Ubuntu"
 
   - name: install apache
-    dnf:
-      name: httpd
+    apt:
+      name: apache2
       state: latest
+    when: ansible_distribution == "Ubuntu"
 
-  - name: start systemd
-    systemd:
-      name: httpd
-      enabled: true
-      state: started
+  - name: add php support for apache
+    apt:
+      name: libapache2-mod-php
+      state: latest
+    when: ansible_distribution == "Ubuntu"
 
