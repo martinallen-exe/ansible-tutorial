@@ -1,0 +1,20 @@
+---
+
+- hosts: all
+  become: true
+  tasks: 
+  - name: update repository index
+    dnf:
+      update_cache: true
+
+  - name: install apache
+    dnf:
+      name: httpd
+      state: latest
+
+  - name: start systemd
+    systemd:
+      name: httpd
+      enabled: true
+      state: started
+

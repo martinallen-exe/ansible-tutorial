@@ -1,0 +1,17 @@
+---
+
+- hosts: all
+  become: true
+  tasks: 
+
+  - name: stop httpd
+    systemd:
+      name: httpd
+      state: stopped
+      enabled: false
+
+  - name: remove apache
+    dnf:
+      name: httpd
+      state: absent
+
