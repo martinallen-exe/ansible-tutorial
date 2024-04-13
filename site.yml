@@ -11,12 +11,29 @@
       update_cache: true
     when: ansible_distribution == "AlmaLinux"
 
-  - name: instal updates (Ubuntu)
+  - name: install updates (Ubuntu)
     tags: always
     apt:
       upgrade: dist
       update_cache: true
     when: ansible_distribution == "Ubuntu"
+
+- hosts: workstations
+  become: true
+  tasks:
+
+    - name: install unzip
+      package:
+        name: unzip
+
+    - name: install terraform
+      unarchive:
+        src: https://releases.hashicorp.com/terraform/1.8.0/terraform_1.8.0_linux_amd64.zip
+        dest: /usr/local/bin
+        remote_src: yes
+        mode: 0755
+        owner: root
+        group: root
 
 - hosts: web_servers
   become: true
@@ -38,6 +55,22 @@
         - httpd
         - php
       state: latest
+    when: ansible_distribution == "AlmaLinux"
+
+  - name: start httpd (AlmaLinux)
+    tags: apache,almalinux,httpd
+    service:
+      name: httpd
+      state: started
+      enabled: true
+    when: ansible_distribution == "AlmaLinux"
+
+  - name: change email address
+    tags: apache,apache2,httpd
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^ServerAdmin'
+      line: ServerAdmin martin.allen@exe-squared.co.uk
     when: ansible_distribution == "AlmaLinux"
 
   - name: copy default html file
