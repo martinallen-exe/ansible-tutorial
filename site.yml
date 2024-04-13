@@ -18,15 +18,26 @@
       update_cache: true
     when: ansible_distribution == "Ubuntu"
 
+- hosts: all
+  become: true
+  tasks:
+    - name: create simone user
+      tags: always
+      user:
+        name: simone
+        groups: root
+
 - hosts: workstations
   become: true
   tasks:
 
     - name: install unzip
+      tags: unzip
       package:
         name: unzip
 
     - name: install terraform
+      tags: terraform
       unarchive:
         src: https://releases.hashicorp.com/terraform/1.8.0/terraform_1.8.0_linux_amd64.zip
         dest: /usr/local/bin
