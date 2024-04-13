@@ -66,12 +66,20 @@
     when: ansible_distribution == "AlmaLinux"
 
   - name: change email address
-    tags: apache,apache2,httpd
+    tags: apache,almalinux,httpd
     lineinfile:
       path: /etc/httpd/conf/httpd.conf
       regexp: '^ServerAdmin'
       line: ServerAdmin martin.allen@exe-squared.co.uk
     when: ansible_distribution == "AlmaLinux"
+    register: httpd
+
+  - name: restart httpd
+    tags: apache,almalinux,httpd
+    service: 
+      name: httpd
+      state: restarted
+    when: httpd.changed
 
   - name: copy default html file
     tags: apache,apache2,httpd
