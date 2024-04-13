@@ -1,0 +1,44 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks: 
+
+  - name: install updates (Alma)
+    tags: always
+    dnf:
+      update_only: true
+      update_cache: true
+    when: ansible_distribution == "AlmaLinux"
+
+  - name: install updates (Ubuntu)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: true
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  tasks:
+
+    - name: create simone user
+      tags: always
+      user:
+        name: simone
+        groups: root
+
+    - name: add ssh key for simone
+      tags: always
+      ansible.posix.authorized_key:
+        user: simone
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEj8zBWqleLjSjxcCJArW4bw63x+XUrHWIKwh7NAsKs5 Ansible"
+
+    - name: add sudoers file for Simone
+      tags: always
+      copy:
+        src: sudoer_simone
+        dest: /etc/sudoers.d/simone
+        owner: root
+        group: root
+

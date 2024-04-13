@@ -4,28 +4,29 @@
   become: true
   pre_tasks: 
 
-  - name: install updates (Alma)
+  - name: update repo cache (Alma)
     tags: always
     dnf:
-      update_only: true
       update_cache: true
+    changed_when: false
     when: ansible_distribution == "AlmaLinux"
 
-  - name: install updates (Ubuntu)
+  - name: update repo cache (Ubuntu)
     tags: always
     apt:
-      upgrade: dist
       update_cache: true
+    changed_when: false
     when: ansible_distribution == "Ubuntu"
 
 - hosts: all
   become: true
   tasks:
-    - name: create simone user
+
+    - name: add ssh key for simone
       tags: always
-      user:
-        name: simone
-        groups: root
+      ansible.posix.authorized_key:
+        user: simone
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEj8zBWqleLjSjxcCJArW4bw63x+XUrHWIKwh7NAsKs5 Ansible"
 
 - hosts: workstations
   become: true
